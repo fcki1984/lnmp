@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-DB_Info=('MySQL 5.1.73' 'MySQL 5.5.62' 'MySQL 5.6.51' 'MySQL 5.7.44' 'MySQL 8.0.39' 'MySQL 8.4.2' 'MariaDB 5.5.68' 'MariaDB 10.4.34' 'MariaDB 10.5.26' 'MariaDB 10.6.19' 'MariaDB 10.11.9')
-PHP_Info=('PHP 5.2.17' 'PHP 5.3.29' 'PHP 5.4.45' 'PHP 5.5.38' 'PHP 5.6.40' 'PHP 7.0.33' 'PHP 7.1.33' 'PHP 7.2.34' 'PHP 7.3.33' 'PHP 7.4.33' 'PHP 8.0.30' 'PHP 8.1.29' 'PHP 8.2.23' 'PHP 8.3.11')
+DB_Info=('MySQL 5.1.73' 'MySQL 5.5.62' 'MySQL 5.6.51' 'MySQL 5.7.44' 'MySQL 8.0.39' 'MySQL 8.4.3' 'MariaDB 5.5.68' 'MariaDB 10.4.34' 'MariaDB 10.5.26' 'MariaDB 10.6.19' 'MariaDB 10.11.9')
+PHP_Info=('PHP 5.2.17' 'PHP 5.3.29' 'PHP 5.4.45' 'PHP 5.5.38' 'PHP 5.6.40' 'PHP 7.0.33' 'PHP 7.1.33' 'PHP 7.2.34' 'PHP 7.3.33' 'PHP 7.4.33' 'PHP 8.0.30' 'PHP 8.1.29' 'PHP 8.2.23' 'PHP 8.3.11' 'PHP 8.4.2')
 Apache_Info=('Apache 2.2.34' 'Apache 2.4.62')
 
 Database_Selection()
@@ -379,7 +379,7 @@ PHP_Selection()
         echo "==========================="
 
         PHPSelect="3"
-        Echo_Yellow "You have 9 options for your PHP install."
+        Echo_Yellow "You have 15 options for your PHP install."
         echo "1: Install ${PHP_Info[0]}"
         echo "2: Install ${PHP_Info[1]}"
         echo "3: Install ${PHP_Info[2]}"
@@ -394,7 +394,8 @@ PHP_Selection()
         echo "12: Install ${PHP_Info[11]}"
         echo "13: Install ${PHP_Info[12]}"
         echo "14: Install ${PHP_Info[13]}"
-        read -p "Enter your choice (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14): " PHPSelect
+        echo "15: Install ${PHP_Info[14]}"
+        read -p "Enter your choice (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15): " PHPSelect
     fi
 
     case "${PHPSelect}" in
@@ -443,6 +444,9 @@ PHP_Selection()
         ;;
     14)
         echo "You will install ${PHP_Info[13]}"
+        ;;
+    15)
+        echo "You will install ${PHP_Info[14]}"
         ;;
     *)
         echo "No input,You will install ${PHP_Info[4]}"
@@ -760,6 +764,30 @@ Download_Files()
     else
         echo "Notice: ${FileName} not found!!!download now..."
         wget -c --progress=dot -e dotbytes=20M --prefer-family=IPv4 --no-check-certificate ${URL}
+    fi
+}
+
+Verify_Tarball()
+{
+    local FileName=$1
+    local URL=$2
+    if [ ! -s "${FileName}" ]; then
+        return 0
+    fi
+
+    if tar tzf "${FileName}" >/dev/null 2>&1; then
+        return 0
+    fi
+
+    echo "Warning: ${FileName} failed integrity check, re-downloading..."
+    rm -f "${FileName}"
+    if [ -n "${URL}" ]; then
+        Download_Files "${URL}" "${FileName}"
+    fi
+
+    if ! tar tzf "${FileName}" >/dev/null 2>&1; then
+        Echo_Red "Integrity verification failed for ${FileName}, aborting to avoid broken install."
+        exit 1
     fi
 }
 
