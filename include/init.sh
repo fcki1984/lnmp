@@ -472,6 +472,7 @@ Check_Download()
     Download_Files https://sourceforge.net/projects/mhash/files/mhash/0.9.9.9/${Mhash_Ver}.tar.bz2 ${Mhash_Ver}.tar.bz2
     if [ "${Stack}" != "lamp" ]; then
         Download_Files https://nginx.org/download/${Nginx_Ver}.tar.gz ${Nginx_Ver}.tar.gz
+        Verify_Tarball ${Nginx_Ver}.tar.gz https://nginx.org/download/${Nginx_Ver}.tar.gz
     fi
     if [[ "${DBSelect}" =~ ^[123456]$ ]]; then
         if [[ "${Bin}" = "y" && "${DBSelect}" =~ ^[2-4]$ ]]; then
