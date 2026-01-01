@@ -185,6 +185,7 @@ Check_MySQL_Data_Dir()
     else
         mkdir -p ${MySQL_Data_Dir}
     fi
+    chmod 750 ${MySQL_Data_Dir}
 }
 
 Install_MySQL_51()
@@ -448,6 +449,8 @@ socket      = /tmp/mysql.sock
 port        = 3306
 socket      = /tmp/mysql.sock
 datadir = ${MySQL_Data_Dir}
+log_error = ${MySQL_Data_Dir}/mysql.err
+pid_file = ${MySQL_Data_Dir}/mysql.pid
 skip-external-locking
 key_buffer_size = 16M
 max_allowed_packet = 1M
@@ -596,6 +599,8 @@ socket      = /tmp/mysql.sock
 port        = 3306
 socket      = /tmp/mysql.sock
 datadir = ${MySQL_Data_Dir}
+log_error = ${MySQL_Data_Dir}/mysql.err
+pid_file = ${MySQL_Data_Dir}/mysql.pid
 skip-external-locking
 key_buffer_size = 16M
 max_allowed_packet = 1M
@@ -654,6 +659,9 @@ EOF
 
     MySQL_Opt
     Check_MySQL_Data_Dir
+    touch ${MySQL_Data_Dir}/mysql.err
+    chown mysql:mysql ${MySQL_Data_Dir}/mysql.err
+    chmod 640 ${MySQL_Data_Dir}/mysql.err
     chown -R mysql:mysql /usr/local/mysql
     /usr/local/mysql/bin/mysqld --initialize-insecure --basedir=/usr/local/mysql --datadir=${MySQL_Data_Dir} --user=mysql
     chown -R mysql:mysql ${MySQL_Data_Dir}
@@ -685,7 +693,7 @@ Install_MySQL_80()
         Tar_Cd ${Mysql_Ver}.tar.gz ${Mysql_Ver}
         Install_Boost
         mkdir build && cd build
-        cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DSYSCONFDIR=/etc -DWITH_MYISAM_STORAGE_ENGINE=1 -DWITH_INNOBASE_STORAGE_ENGINE=1 -DWITH_PARTITION_STORAGE_ENGINE=1 -DWITH_FEDERATED_STORAGE_ENGINE=1 -DEXTRA_CHARSETS=all -DDEFAULT_CHARSET=utf8mb4 -DDEFAULT_COLLATION=utf8mb4_general_ci -DWITH_EMBEDDED_SERVER=1 -DENABLED_LOCAL_INFILE=1 ${MySQL_WITH_BOOST}
+        cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DSYSCONFDIR=/etc -DWITH_MYISAM_STORAGE_ENGINE=1 -DWITH_INNOBASE_STORAGE_ENGINE=1 -DWITH_PARTITION_STORAGE_ENGINE=1 -DWITH_FEDERATED_STORAGE_ENGINE=1 -DEXTRA_CHARSETS=all -DDEFAULT_CHARSET=utf8mb4 -DDEFAULT_COLLATION=utf8mb4_general_ci -DWITH_EMBEDDED_SERVER=1 -DENABLED_LOCAL_INFILE=1 -DWITH_ROUTER=OFF -DWITH_UNIT_TESTS=OFF -DBUILD_TESTING=OFF -DWITH_NDB=OFF -DWITH_NDBCLUSTER_STORAGE_ENGINE=OFF -DWITH_ICU=system ${MySQL_WITH_BOOST}
         Make_Install
     fi
 
@@ -702,6 +710,8 @@ socket      = /tmp/mysql.sock
 port        = 3306
 socket      = /tmp/mysql.sock
 datadir = ${MySQL_Data_Dir}
+log_error = ${MySQL_Data_Dir}/mysql.err
+pid_file = ${MySQL_Data_Dir}/mysql.pid
 skip-external-locking
 key_buffer_size = 16M
 max_allowed_packet = 1M
@@ -760,6 +770,9 @@ EOF
 
     MySQL_Opt
     Check_MySQL_Data_Dir
+    touch ${MySQL_Data_Dir}/mysql.err
+    chown mysql:mysql ${MySQL_Data_Dir}/mysql.err
+    chmod 640 ${MySQL_Data_Dir}/mysql.err
     chown -R mysql:mysql /usr/local/mysql
     /usr/local/mysql/bin/mysqld --initialize-insecure --basedir=/usr/local/mysql --datadir=${MySQL_Data_Dir} --user=mysql
     chown -R mysql:mysql ${MySQL_Data_Dir}
@@ -808,6 +821,8 @@ socket      = /tmp/mysql.sock
 port        = 3306
 socket      = /tmp/mysql.sock
 datadir = ${MySQL_Data_Dir}
+log_error = ${MySQL_Data_Dir}/mysql.err
+pid_file = ${MySQL_Data_Dir}/mysql.pid
 skip-external-locking
 key_buffer_size = 16M
 max_allowed_packet = 1M
@@ -866,6 +881,9 @@ EOF
 
     MySQL_Opt
     Check_MySQL_Data_Dir
+    touch ${MySQL_Data_Dir}/mysql.err
+    chown mysql:mysql ${MySQL_Data_Dir}/mysql.err
+    chmod 640 ${MySQL_Data_Dir}/mysql.err
     chown -R mysql:mysql /usr/local/mysql
     /usr/local/mysql/bin/mysqld --initialize-insecure --basedir=/usr/local/mysql --datadir=${MySQL_Data_Dir} --user=mysql
     chown -R mysql:mysql ${MySQL_Data_Dir}
