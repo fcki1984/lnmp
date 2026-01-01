@@ -75,6 +75,7 @@ Install_Redis()
         Download_Files https://pecl.php.net/get/${PHPRedis_Ver}.tgz ${PHPRedis_Ver}.tgz
         Tar_Cd ${PHPRedis_Ver}.tgz ${PHPRedis_Ver}
     fi
+    Prepare_PHP_Ext_Build
     ${PHP_Path}/bin/phpize
     ./configure --with-php-config=${PHP_Path}/bin/php-config
     Make_Install

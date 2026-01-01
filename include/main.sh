@@ -812,6 +812,18 @@ Tar_Cd()
     fi
 }
 
+Prepare_PHP_Ext_Build()
+{
+    unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+    export CFLAGS="" CPPFLAGS="" CXXFLAGS="" LDFLAGS=""
+    if [ -f Makefile ]; then
+        make clean >/dev/null 2>&1 || true
+    fi
+    if [ -x "${PHP_Path}/bin/phpize" ]; then
+        ${PHP_Path}/bin/phpize --clean >/dev/null 2>&1 || true
+    fi
+}
+
 Check_LNMPConf()
 {
     if [ ! -s "${cur_dir}/lnmp.conf" ]; then
