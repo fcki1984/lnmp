@@ -767,18 +767,25 @@ Add_Database_Menu()
 
 Add_Database()
 {
-    if echo "${MySQL_Ver}" | grep -Eqi '^8.0.';then
+    # MySQL 8.x (including 8.4) must NOT use "GRANT ... IDENTIFIED BY ..."
+    if echo "${MySQL_Ver}" | grep -Eqi '^8\.';then
         cat >/tmp/.add_mysql.sql<<EOF
-CREATE USER '${database_name}'@'localhost' IDENTIFIED BY '${mysql_password}';
-CREATE USER '${database_name}'@'127.0.0.1' IDENTIFIED BY '${mysql_password}';
-GRANT USAGE ON *.* TO '${database_name}'@'localhost';
-GRANT USAGE ON *.* TO '${database_name}'@'127.0.0.1';
-CREATE DATABASE IF NOT EXISTS \`${database_name}\`;
+CREATE DATABASE IF NOT EXISTS \`${database_name}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE USER IF NOT EXISTS '${database_name}'@'localhost' IDENTIFIED BY '${mysql_password}';
+CREATE USER IF NOT EXISTS '${database_name}'@'127.0.0.1' IDENTIFIED BY '${mysql_password}';
+CREATE USER IF NOT EXISTS '${database_name}'@'::1' IDENTIFIED BY '${mysql_password}';
+
+ALTER USER '${database_name}'@'localhost' IDENTIFIED BY '${mysql_password}';
+ALTER USER '${database_name}'@'127.0.0.1' IDENTIFIED BY '${mysql_password}';
+ALTER USER '${database_name}'@'::1' IDENTIFIED BY '${mysql_password}';
+
 GRANT ALL PRIVILEGES ON \`${database_name}\`.* TO '${database_name}'@'localhost';
 GRANT ALL PRIVILEGES ON \`${database_name}\`.* TO '${database_name}'@'127.0.0.1';
+GRANT ALL PRIVILEGES ON \`${database_name}\`.* TO '${database_name}'@'::1';
+
 FLUSH PRIVILEGES;
 EOF
-
     else
         cat >/tmp/.add_mysql.sql<<EOF
 CREATE USER '${database_name}'@'localhost' IDENTIFIED BY '${mysql_password}';
@@ -790,7 +797,6 @@ GRANT ALL PRIVILEGES ON \`${database_name}\`.* TO '${database_name}'@'localhost'
 GRANT ALL PRIVILEGES ON \`${database_name}\`.* TO '${database_name}'@'127.0.0.1';
 FLUSH PRIVILEGES;
 EOF
-
     fi
     ${MySQL_Bin} --defaults-file=~/.my.cnf < /tmp/.add_mysql.sql
     [ $? -eq 0 ] && echo "Add database Sucessfully." || echo "Add database failed!"
@@ -826,9 +832,10 @@ Edit_Database()
 
     if echo "${MySQL_Ver}" | grep -Eqi '^5.7.';then
         Do_Query "UPDATE mysql.user SET authentication_string=PASSWORD('${database_username_passwd}') WHERE User='${database_username}' AND Host IN ('localhost', '127.0.0.1', '::1');"
-    elif echo "${MySQL_Ver}" | grep -Eqi '^8.0.';then
-        Do_Query "SET PASSWORD FOR '${database_username}'@'127.0.0.1' = '${database_username_passwd}';"
-        Do_Query "SET PASSWORD FOR '${database_username}'@'localhost' = '${database_username_passwd}';"
+    elif echo "${MySQL_Ver}" | grep -Eqi '^8\.';then
+        Do_Query "ALTER USER IF EXISTS '${database_username}'@'127.0.0.1' IDENTIFIED BY '${database_username_passwd}';"
+        Do_Query "ALTER USER IF EXISTS '${database_username}'@'localhost' IDENTIFIED BY '${database_username_passwd}';"
+        Do_Query "ALTER USER IF EXISTS '${database_username}'@'::1' IDENTIFIED BY '${database_username_passwd}';"
     else
         Do_Query "UPDATE mysql.user SET Password=PASSWORD('${database_username_passwd}') WHERE User='${database_username}' AND Host IN ('localhost', '127.0.0.1', '::1');"
     fi
@@ -848,8 +855,9 @@ Del_Database()
     echo "Sleep 10s, Press ctrl+c to cancel..."
     Sleep_Sec 10
     cat >/tmp/.del.mysql.sql<<EOF
-DROP USER '${database_name}'@'127.0.0.1';
-DROP USER '${database_name}'@'localhost';
+DROP USER IF EXISTS '${database_name}'@'127.0.0.1';
+DROP USER IF EXISTS '${database_name}'@'localhost';
+DROP USER IF EXISTS '${database_name}'@'::1';
 DROP DATABASE \`${database_name}\`;
 FLUSH PRIVILEGES;
 EOF
