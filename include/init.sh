@@ -559,8 +559,19 @@ Make_Install()
     make install
 }
 
+Clean_PHP_Compile_Params()
+{
+    local search_dir="${1:-.}"
+    while IFS= read -r -d '' file; do
+        if grep -q -- "-D_GNU_SOURCE" "${file}"; then
+            perl -0777 -i -pe 's/-D_GNU_SOURCE\s*\\\s*(-DZEND_COMPILE_DL_[A-Za-z0-9_]+=1)/-D_GNU_SOURCE \1/g;s/["'"'"']\s*(-DZEND_COMPILE_DL_[A-Za-z0-9_]+=1)["'"'"']/\1/g' "${file}"
+        fi
+    done < <(find "${search_dir}" -maxdepth 2 -type f \( -name 'Makefile*' -o -name 'config.*' \) -print0)
+}
+
 PHP_Make_Install()
 {
+    Clean_PHP_Compile_Params
     make ZEND_EXTRA_LIBS='-liconv' -j `grep 'processor' /proc/cpuinfo | wc -l`
     if [ $? -ne 0 ]; then
         make ZEND_EXTRA_LIBS='-liconv'
