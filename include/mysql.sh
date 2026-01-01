@@ -659,9 +659,6 @@ EOF
 
     MySQL_Opt
     Check_MySQL_Data_Dir
-    touch ${MySQL_Data_Dir}/mysql.err
-    chown mysql:mysql ${MySQL_Data_Dir}/mysql.err
-    chmod 640 ${MySQL_Data_Dir}/mysql.err
     chown -R mysql:mysql /usr/local/mysql
     /usr/local/mysql/bin/mysqld --initialize-insecure --basedir=/usr/local/mysql --datadir=${MySQL_Data_Dir} --user=mysql
     chown -R mysql:mysql ${MySQL_Data_Dir}
@@ -770,9 +767,6 @@ EOF
 
     MySQL_Opt
     Check_MySQL_Data_Dir
-    touch ${MySQL_Data_Dir}/mysql.err
-    chown mysql:mysql ${MySQL_Data_Dir}/mysql.err
-    chmod 640 ${MySQL_Data_Dir}/mysql.err
     chown -R mysql:mysql /usr/local/mysql
     /usr/local/mysql/bin/mysqld --initialize-insecure --basedir=/usr/local/mysql --datadir=${MySQL_Data_Dir} --user=mysql
     chown -R mysql:mysql ${MySQL_Data_Dir}
@@ -881,9 +875,6 @@ EOF
 
     MySQL_Opt
     Check_MySQL_Data_Dir
-    touch ${MySQL_Data_Dir}/mysql.err
-    chown mysql:mysql ${MySQL_Data_Dir}/mysql.err
-    chmod 640 ${MySQL_Data_Dir}/mysql.err
     chown -R mysql:mysql /usr/local/mysql
     /usr/local/mysql/bin/mysqld --initialize-insecure --basedir=/usr/local/mysql --datadir=${MySQL_Data_Dir} --user=mysql
     chown -R mysql:mysql ${MySQL_Data_Dir}
