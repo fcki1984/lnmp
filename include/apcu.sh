@@ -34,6 +34,7 @@ Install_Apcu()
         Download_Files https://pecl.php.net/get/${PHPOldApcu_Ver}.tgz ${PHPOldApcu_Ver}.tgz
         Tar_Cd ${PHPOldApcu_Ver}.tgz ${PHPOldApcu_Ver}
     fi
+    Prepare_PHP_Ext_Build
     ${PHP_Path}/bin/phpize
     ./configure --with-php-config=${PHP_Path}/bin/php-config
     make
@@ -45,6 +46,7 @@ Install_Apcu()
     if echo "${Cur_PHP_Version}" | grep -Eqi '^7.'; then
         Download_Files https://pecl.php.net/get/${PHPApcu_Bc_Ver}.tgz ${PHPApcu_Bc_Ver}.tgz
         Tar_Cd ${PHPApcu_Bc_Ver}.tgz ${PHPApcu_Bc_Ver}
+        Prepare_PHP_Ext_Build
         ${PHP_Path}/bin/phpize
         ./configure --with-php-config=${PHP_Path}/bin/php-config
         make

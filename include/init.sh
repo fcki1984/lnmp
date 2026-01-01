@@ -879,7 +879,7 @@ Install_Libzip()
         if [ ! -s /usr/local/lib/libzip.so ]; then
             Echo_Blue "[+] Installing ${Libzip_Ver}"
             cd ${cur_dir}/src
-            Download_Files https://libzip.org/download/${Libzip_Ver}.tar.xz ${Libzip_Ver}.tar.xz
+            Download_Files https://github.com/nih-at/libzip/releases/download/v${Libzip_Ver#libzip-}/${Libzip_Ver}.tar.xz ${Libzip_Ver}.tar.xz
             Tar_Cd ${Libzip_Ver}.tar.xz ${Libzip_Ver}
             ./configure
             Make_Install

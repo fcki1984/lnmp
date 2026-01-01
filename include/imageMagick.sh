@@ -59,6 +59,7 @@ Install_ImageMagic()
         Download_Files https://pecl.php.net/get/${Imagick_Ver}.tgz ${Imagick_Ver}.tgz
         Tar_Cd ${Imagick_Ver}.tgz ${Imagick_Ver}
     fi
+    Prepare_PHP_Ext_Build
     ${PHP_Path}/bin/phpize
     ./configure --with-php-config=${PHP_Path}/bin/php-config --with-imagick=/usr/local/imagemagick
     Make_Install
