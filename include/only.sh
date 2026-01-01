@@ -124,6 +124,20 @@ DB_Dependent()
         dpkg -P mariadb-client mariadb-server mariadb-common
         for packages in debian-keyring debian-archive-keyring build-essential gcc g++ make cmake autoconf automake wget openssl libssl-dev zlib1g zlib1g-dev libncurses5 libncurses5-dev bison libaio-dev libtirpc-dev libsasl2-dev pkg-config libpcre2-dev libxml2-dev libtinfo-dev libnuma-dev gnutls-dev xz-utils gzip libicu-dev;
         do apt-get --no-install-recommends install -y $packages; done
+        if [ ! -e /usr/lib/x86_64-linux-gnu/libncurses.so.5 ] && [ -e /usr/lib/x86_64-linux-gnu/libncurses.so.6 ]; then
+            ln -sf /usr/lib/x86_64-linux-gnu/libncurses.so.6 /usr/lib/x86_64-linux-gnu/libncurses.so.5
+            ldconfig
+        elif [ ! -e /usr/lib/libncurses.so.5 ] && [ -e /usr/lib/libncurses.so.6 ]; then
+            ln -sf /usr/lib/libncurses.so.6 /usr/lib/libncurses.so.5
+            ldconfig
+        fi
+        if [ ! -e /usr/lib/x86_64-linux-gnu/libtinfo.so.5 ] && [ -e /usr/lib/x86_64-linux-gnu/libtinfo.so.6 ]; then
+            ln -sf /usr/lib/x86_64-linux-gnu/libtinfo.so.6 /usr/lib/x86_64-linux-gnu/libtinfo.so.5
+            ldconfig
+        elif [ ! -e /usr/lib/libtinfo.so.5 ] && [ -e /usr/lib/libtinfo.so.6 ]; then
+            ln -sf /usr/lib/libtinfo.so.6 /usr/lib/libtinfo.so.5
+            ldconfig
+        fi
     fi
 }
 

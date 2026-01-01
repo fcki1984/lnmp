@@ -460,6 +460,20 @@ Deb_Dependent()
     apt-get --no-install-recommends install -y build-essential gcc g++ make
     for packages in debian-keyring debian-archive-keyring build-essential gcc g++ make cmake autoconf automake re2c wget cron bzip2 libzip-dev libc6-dev bison file rcconf flex bison m4 gawk less cpp binutils diffutils unzip tar bzip2 libbz2-dev libncurses5 libncurses5-dev libtool libevent-dev openssl libssl-dev zlibc libsasl2-dev libltdl3-dev libltdl-dev zlib1g zlib1g-dev libbz2-1.0 libbz2-dev libglib2.0-0 libglib2.0-dev libpng3 libjpeg-dev libpng-dev libpng12-0 libpng12-dev libkrb5-dev curl libcurl3-gnutls libcurl4-gnutls-dev libcurl4-openssl-dev libpcre3-dev libpq-dev libpq5 gettext libpng12-dev libxml2-dev libcap-dev ca-certificates libc-client2007e-dev psmisc patch git libc-ares-dev libicu-dev e2fsprogs libxslt1.1 libxslt1-dev libc-client-dev xz-utils libexpat1-dev libaio-dev libtirpc-dev libsqlite3-dev libonig-dev lsof pkg-config libtinfo-dev libnuma-dev libwebp-dev gnutls-dev iproute2 xz-utils gzip;
     do apt-get --no-install-recommends install -y $packages; done
+    if [ ! -e /usr/lib/x86_64-linux-gnu/libncurses.so.5 ] && [ -e /usr/lib/x86_64-linux-gnu/libncurses.so.6 ]; then
+        ln -sf /usr/lib/x86_64-linux-gnu/libncurses.so.6 /usr/lib/x86_64-linux-gnu/libncurses.so.5
+        ldconfig
+    elif [ ! -e /usr/lib/libncurses.so.5 ] && [ -e /usr/lib/libncurses.so.6 ]; then
+        ln -sf /usr/lib/libncurses.so.6 /usr/lib/libncurses.so.5
+        ldconfig
+    fi
+    if [ ! -e /usr/lib/x86_64-linux-gnu/libtinfo.so.5 ] && [ -e /usr/lib/x86_64-linux-gnu/libtinfo.so.6 ]; then
+        ln -sf /usr/lib/x86_64-linux-gnu/libtinfo.so.6 /usr/lib/x86_64-linux-gnu/libtinfo.so.5
+        ldconfig
+    elif [ ! -e /usr/lib/libtinfo.so.5 ] && [ -e /usr/lib/libtinfo.so.6 ]; then
+        ln -sf /usr/lib/libtinfo.so.6 /usr/lib/libtinfo.so.5
+        ldconfig
+    fi
     if echo "${Debian_Version}" | grep -Eqi "^1[3-9]" && [ "$(getconf LONG_BIT)" = "64" ]; then
         if [ ! -e /usr/lib/x86_64-linux-gnu/libaio.so.1 ] && [ -e /usr/lib/x86_64-linux-gnu/libaio.so.1t64 ]; then
             ln -sf /usr/lib/x86_64-linux-gnu/libaio.so.1t64 /usr/lib/x86_64-linux-gnu/libaio.so.1
